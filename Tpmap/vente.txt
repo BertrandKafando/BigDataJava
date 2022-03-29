@@ -1,0 +1,6 @@
+2020 Tanger Dell 300000
+2020 Mohammedia Dell 500000
+2020 Casablanca Dell 120000
+2021 Tanger Dell 400000
+2020 Mohammedia Dell 700000
+2021 Casablanca Dell 80000
