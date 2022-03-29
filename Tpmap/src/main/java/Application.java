@@ -16,8 +16,8 @@ public class Application {
         conf.setJobName("Nomre de mots");
         conf.setJarByClass(Application.class);
 
-        conf.setMapperClass(OcurrencesMapper2.class);
-        conf.setReducerClass(OccurencesReducer2.class);
+        conf.setMapperClass(OcurrencesMapper.class);
+        conf.setReducerClass(OccurencesReducer.class);
 
         conf.setOutputKeyClass(Text.class);
         conf.setOutputValueClass(IntWritable.class);
