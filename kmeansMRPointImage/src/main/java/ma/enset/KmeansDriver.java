@@ -55,33 +55,20 @@ public class KmeansDriver {
         br1.close();
 
         while (true) {
-
-
             Job job = Job.getInstance(conf, "Kmeans job");
-
-
             job.setJarByClass(KmeansDriver.class);
             job.setMapperClass(KmeansMapper.class);
             job.setReducerClass(KmeansReducer.class);
-
             job.setMapOutputKeyClass(Text.class);
             job.setOutputValueClass(Text.class);
-
             job.setOutputKeyClass(Text.class);
             job.setOutputValueClass(Text.class);
-
             job.setInputFormatClass(TextInputFormat.class);
             job.setOutputFormatClass(TextOutputFormat.class);
-
-
             job.addCacheFile(new URI("hdfs://localhost:9000/input/centerimg.txt"));
-
             FileInputFormat.addInputPath(job, file);
             FileOutputFormat.setOutputPath(job, new Path("/output/RMI"+iteration));
-
             job.waitForCompletion(true);
-
-
             // replace centroids with new centroids from last output file after the end of every job //
             FSDataOutputStream out = fs.create(new Path("hdfs://localhost:9000/input/centerimg.txt"), true);
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(out));
@@ -106,21 +93,17 @@ public class KmeansDriver {
             System.out.println(old_centroid.toString());
             System.out.println(new_centroid.toString());
             //don't forget to delete space
-
             // if old centroids == new centroids or iterations>=10 -> end while
             if(new_centroid.toString().equals(old_centroid.toString()) || iteration>=10){
                 break;
             }
-
             // save new centroids to centerMRI.txt
             bw.write(new_centroid.toString());
-
             bw.close();
             br.close();
             iteration++;
 
         }
-
         // create images "gray_matter.gif", "white_matter.gif" , "cephalo_rachidien.png" from obtained output
         InputStreamReader is = new InputStreamReader(fs.open(new Path("hdfs://localhost:9000/output/RMI" + iteration + "/part-r-00000")));  // read last output file
         BufferedReader br = new BufferedReader(is);

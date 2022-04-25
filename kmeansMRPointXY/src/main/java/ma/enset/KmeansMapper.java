@@ -29,7 +29,7 @@ public class KmeansMapper extends Mapper<LongWritable, Text, Text,Text> {
         while((ligne=reader.readLine())!=null){
             String tab[]=ligne.split(",");
            // double centre=Math.sqrt( Math.pow(Double.parseDouble(tab[0]),2)+Math.pow(Double.parseDouble(tab[1]),2));
-            Centroid centroid=new Centroid(0,Double.parseDouble(tab[0]),Double.parseDouble(tab[1]));
+            Centroid centroid=new Centroid(Double.parseDouble(tab[0]),Double.parseDouble(tab[1]));
             centres.add(centroid);
         }
     }

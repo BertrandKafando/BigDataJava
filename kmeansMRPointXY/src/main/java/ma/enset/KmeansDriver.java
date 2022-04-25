@@ -28,6 +28,7 @@ public class KmeansDriver {
         Path file=new Path("/input/datav2.txt");
 
         while (true) {
+
             Configuration conf = new Configuration();
             Job job = Job.getInstance(conf, "Kmeans job");
 
@@ -58,15 +59,12 @@ public class KmeansDriver {
             // replace centroids with new centroids from last output file after the end of every job //
             FSDataOutputStream out = fs.create(new Path("hdfs://localhost:9000/input/centerv2.txt"), true);
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(out));
-
             // get new centroids from last output
             InputStreamReader is = new InputStreamReader(fs.open(new Path("hdfs://localhost:9000/output/oup" + iteration + "/part-r-00000")));
             BufferedReader br = new BufferedReader(is);
             String line = null;
-
             StringBuilder old_centroid = new StringBuilder();
             StringBuilder new_centroid = new StringBuilder();
-
             while ((line = br.readLine()) != null) {
                 String part[]= line.split("__");
                 //new centroids
@@ -76,25 +74,19 @@ public class KmeansDriver {
                 old_centroid.append(part[0]);
                 old_centroid.append("\n");
             }
-
             // if old centroids == new centroids or iterations>=10 -> end while
             //new_centroid.toString().equals(old_centroid.toString())
-            if(new_centroid.toString().equals(old_centroid.toString())|| iteration>=10){
+            System.out.println(old_centroid.toString());
+            System.out.println(new_centroid.toString());
+            //don't forget to delete space
+            if((new_centroid.toString().replaceAll("\\s+","")).equals((old_centroid.toString().replaceAll("\\s+","")))|| iteration>=10){
+                System.out.println("stop");
                 break;
             }
-
             // save new centroids to centerMRI.txt
             bw.write(new_centroid.toString());
-            System.out.println(new_centroid.toString());
-
             bw.close();
             br.close();
-
-
-
-
-
-
             iteration++;
 
         }

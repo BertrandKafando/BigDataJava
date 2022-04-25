@@ -4,12 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Centroid extends  Point {
-    private double centre;
     List<Point>points=new ArrayList<>();
-
-    public Centroid(double centre,double x,double y) {
+    public Centroid(double x,double y) {
         super(x,y);
-        this.centre = centre;
+
     }
 
     public Centroid() {
@@ -24,13 +22,6 @@ public class Centroid extends  Point {
                 '}';
     }
 
-    public double getCentre() {
-        return centre;
-    }
-
-    public void setCentre(double centre) {
-        this.centre = centre;
-    }
 
     public List<Point> getPoints() {
         return points;
