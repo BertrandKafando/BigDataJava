@@ -5,6 +5,7 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.*;
+import org.apache.spark.storage.StorageLevel;
 import scala.Tuple2;
 
 import java.util.*;
@@ -14,24 +15,20 @@ public class Driver {
     public static void main(String[] args) {
         SparkConf conf=new SparkConf().setAppName("temperature").setMaster("local[*]");
         JavaSparkContext context=new JavaSparkContext(conf);
-        JavaRDD<String> rdd1=context.textFile("1750.csv");
-
+        JavaRDD<String> rdd1=context.textFile("2020.csv");
         //temp moyenne minimale
-        JavaPairRDD<String,Integer> rdd2=rdd1.mapToPair(new PairFunction<String, String, Integer>() {
-            @Override
-            public Tuple2<String, Integer> call(String s) throws Exception {
-                String tab[]=s.split(",");
-                return new Tuple2<>(tab[2],Integer.parseInt(tab[3]));
-            }
-        });
-
-
-        JavaPairRDD<String, Iterable<Integer>> rddmin=rdd2.groupByKey().filter((key)->(key._1().equals("TMIN")));
-        JavaPairRDD<String, Iterable<Integer>> rddmax=rdd2.groupByKey().filter((key)->(key._1().equals("TMAX")));
+        //envoie le nom de la data (tmax ou tmin) et la valeur
+        JavaPairRDD<String,Integer> rdd2=rdd1.mapToPair((s -> {
+            String tab[]=s.split(",");
+            return new Tuple2<>(tab[2],Integer.parseInt(tab[3]));
+        })).persist(StorageLevel.MEMORY_ONLY());
+        JavaPairRDD<String, Iterable<Integer>> rddmin=rdd2.groupByKey().filter((key)->(key._1().equals("TMIN"))).persist(StorageLevel.MEMORY_ONLY());
+        JavaPairRDD<String, Iterable<Integer>> rddmax=rdd2.groupByKey().filter((key)->(key._1().equals("TMAX"))).persist(StorageLevel.MEMORY_ONLY());
         /*
+        * avec grouby je regroupe les donnees de chaque key(tmax,tmin,...) et je stocke dans dans les tuples (key,[liste _value])
         * je peux filtrer ici .filter((key)->(key._1().equals("TMIN")) et TMAX
+        *
          * */
-
         JavaPairRDD<String, Double>rrdmeanmin=rddmin.mapValues(new Function<Iterable<Integer>, Double>() {
             @Override
             public Double call(Iterable<Integer> integers) throws Exception {
@@ -46,23 +43,22 @@ public class Driver {
                 return  (somme/nbr);
             }
         });
-       // rddmin.foreach(p-> System.out.println(p));
-        //rrd.collect().forEach(p-> System.out.println(p));
-
-        //temp max + eleve
-        JavaPairRDD<String, Double>rrdmaxmax=rddmax.mapValues(new Function<Iterable<Integer>, Double>() {
-            @Override
-            public Double call(Iterable<Integer> integers) throws Exception {
-                Iterator<Integer>it=integers.iterator();
-                int i=0;
-                double max=0;
-                while (it.hasNext()){
-                   if(max<it.next()) max= it.next();
-                }
-                return  max;
+        //calcul de la moyenne
+        JavaPairRDD<String, Double>rrdmeanmax=rddmax.mapValues((integers -> {
+            int i=0;
+            Iterator<Integer>it=integers.iterator();
+            double somme=0;
+            while (it.hasNext()){
+                somme=somme+it.next();
+                i++;
             }
-        });
-        //rrdmaxmax.collect().forEach(p-> System.out.println(p));
+            return  (somme/i);
+        }));
+         rddmin.collect().forEach(p-> System.out.println(p));
+        rrdmeanmin.collect().forEach(p-> System.out.println(p));
+
+
+
 
 
 
@@ -80,7 +76,7 @@ public class Driver {
             }
 
         });
-        rddmax1.foreach(p-> System.out.println(p));
+       // rddmax1.foreach(p-> System.out.println(p));
 
 
     }
