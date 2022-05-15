@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "name": "Bertrand",
+    "phone": "068849333",
+    "salary": 10000,
+    "age": 21,
+    "departement": "Informatique"
+  },
+  {
+    "id": 2,
+    "name": "hassan",
+    "phone": "068849333",
+    "salary": 40000,
+    "age": 38,
+    "departement": "Informatique"
+  },
+  {
+    "id": 3,
+    "name": "Bertrand",
+    "phone": "068849333",
+    "salary": 30000,
+    "age": 32,
+    "departement": "Mecanique"
+  },
+  {
+    "id": 4,
+    "name": "hassan",
+    "phone": "068849333",
+    "salary": 8000,
+    "age": 21,
+    "departement": "Mecanique"
+  },
+  {
+    "id": 5,
+    "name": "hassan",
+    "phone": "068849333",
+    "salary": 40000,
+    "age": 21,
+    "departement": "Electrique"
+  },
+  {
+    "id": 6,
+    "name": "Bertrand",
+    "phone": "068849333",
+    "salary": 30000,
+    "age": 34,
+    "departement": "Electrique"
+  },
+  {
+    "id": 7,
+    "name": "hassan",
+    "phone": "068849333",
+    "salary": 8000,
+    "age": 30,
+    "departement": "Electrique"
+  }
+]
